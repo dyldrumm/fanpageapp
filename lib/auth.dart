@@ -12,12 +12,12 @@ class AuthService {
   }
 
   // User auth change stream
-  Stream<MyUser> get userStream {
-    return _auth
-        .authStateChanges()
-        // .map((User user) => _firebaseUser(user));
-        .map(_firebaseUser);
-  }
+  // Stream<MyUser> get userStream {
+  //   return _auth
+  //       .authStateChanges()
+  //       // .map((User user) => _firebaseUser(user));
+  //       .map(_firebaseUser);
+  // }
 
   // Anonymous signin
   Future signInAnon() async {
