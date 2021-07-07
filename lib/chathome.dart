@@ -4,6 +4,8 @@ import 'package:fanpageapp/chatroom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
+  int users = 0;
+  String title = '';
   @override
   _State createState() => _State();
 }
