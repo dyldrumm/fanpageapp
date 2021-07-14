@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fanpageapp/signin.dart';
+import 'package:fanpageapp/screens/signin.dart';
 
 class Authenticate extends StatefulWidget {
   @override
