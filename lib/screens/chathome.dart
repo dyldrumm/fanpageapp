@@ -53,20 +53,20 @@ class _State extends State<Home> {
         backgroundColor: Colors.green[200],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: index,
-          onTap: (int index) {
+          onTap: (int indexx) {
             setState(() {
               this.index = index;
-              if (index == 0) {
+              if (indexx == 0) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),
                 );
-              } else if (index == 1) {
+              } else if (indexx == 1) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),
                 );
-              } else if (index == 2) {
+              } else if (indexx == 2) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Profile()),
@@ -147,23 +147,14 @@ class _State extends State<Home> {
                                                             itemBuilder:
                                                                 (context,
                                                                     index) {
-                                                              return MessageTile(
-                                                                message: (snapshot
-                                                                            .data!
-                                                                        as QuerySnapshot)
-                                                                    .docs[
-                                                                        indexx]
-                                                                    .data()!
-                                                                    .toString(),
-                                                                sender: CurrentUser
-                                                                        .getDisplay() ==
-                                                                    (snapshot.data!
-                                                                            as QuerySnapshot)
-                                                                        .docs[
-                                                                            indexx]
-                                                                        .data()!
-                                                                        .toString(),
-                                                              );
+                                                              return ChatTile(
+                                                                  title: (snapshot
+                                                                              .data!
+                                                                          as QuerySnapshot)
+                                                                      .docs[
+                                                                          index]
+                                                                      .data()!
+                                                                      .toString());
                                                             })
                                                         : Container();
                                                   },
@@ -274,4 +265,26 @@ class _State extends State<Home> {
 Future<InitializationStatus> _initGoogleMobileAds() {
   // COMPLETE: Initialize Google Mobile Ads SDK
   return MobileAds.instance.initialize();
+}
+
+class ChatTile extends StatelessWidget {
+  final String title;
+
+  ChatTile({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.only(top: 8, bottom: 8),
+        alignment: Alignment.centerRight,
+        child: Container(
+          padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
+          child: Text(title,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w300)),
+        ));
+  }
 }
