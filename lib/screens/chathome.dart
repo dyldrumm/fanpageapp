@@ -15,29 +15,29 @@ class Home extends StatefulWidget {
   _State createState() => _State();
 }
 
-@override
-void initState() {
-  // TODO: Initialize _bannerAd
-  BannerAd _bannerAd = BannerAd(
-    adUnitId: AdHelper.bannerAdUnitId,
-    request: AdRequest(),
-    size: AdSize.banner,
-    listener: BannerAdListener(
-      onAdLoaded: (_) {
-        setState(() {
-          _isBannerAdReady = true;
-        });
-      },
-      onAdFailedToLoad: (ad, err) {
-        print('Failed to load a banner ad: ${err.message}');
-        _isBannerAdReady = false;
-        ad.dispose();
-      },
-    ),
-  );
+// @override
+// void initState() {
+//   // TODO: Initialize _bannerAd
+//   BannerAd _bannerAd = BannerAd(
+//     adUnitId: AdHelper.bannerAdUnitId,
+//     request: AdRequest(),
+//     size: AdSize.banner,
+//     listener: BannerAdListener(
+//       onAdLoaded: (_) {
+//         setState(() {
+//           _isBannerAdReady = true;
+//         });
+//       },
+//       onAdFailedToLoad: (ad, err) {
+//         print('Failed to load a banner ad: ${err.message}');
+//         _isBannerAdReady = false;
+//         ad.dispose();
+//       },
+//     ),
+//   );
 
-  _bannerAd.load();
-}
+//   _bannerAd.load();
+// }
 
 class _State extends State<Home> {
   @override
