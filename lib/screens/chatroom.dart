@@ -1,3 +1,5 @@
+import 'package:fanpageapp/objs/currentuser.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,25 +15,35 @@ class Chatroom extends StatefulWidget {
 class _State extends State<Chatroom> {
   @override
   int index = 0;
-  // Stream<QuerySnapshot> messages;
-  // Widget chatMessages() {
-  //   return StreamBuilder(
-  //     stream: messages,
-  //     builder: (context, snapshot) {
-  //       return snapshot.hasData
-  //           ? ListView.builder(
-  //               itemCount: (snapshot.data! as QuerySnapshot).docs.length,
-  //               itemBuilder: (context, index) {
-  //                 return MessageTile(
-  //                   message: (snapshot.data! as QuerySnapshot).docs[index].data(["message"]),
-  //                   sender: Constants.myName ==
-  //                       snapshot.data.docs[index].data["sendBy"],
-  //                 );
-  //               })
-  //           : Container();
-  //     },
-  //   );
-  // }
+  // late Stream<QuerySnapshot> messages;
+  Widget chatMessages(String chatroomID) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("chatrooms")
+          .doc(chatroomID)
+          .collection("messages")
+          .snapshots(),
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: (snapshot.data! as QuerySnapshot).docs.length,
+                itemBuilder: (context, index) {
+                  return MessageTile(
+                    message: (snapshot.data! as QuerySnapshot)
+                        .docs[index]
+                        .data()!
+                        .toString(),
+                    sender: CurrentUser.getDisplay() ==
+                        (snapshot.data! as QuerySnapshot)
+                            .docs[index]
+                            .data()!
+                            .toString(),
+                  );
+                })
+            : Container();
+      },
+    );
+  }
 
   final textController = TextEditingController();
   final AuthService _auth = AuthService();
@@ -75,10 +87,11 @@ class _State extends State<Chatroom> {
                                   child: Text('Send'),
                                   onPressed: () async {
                                     Map<String, String> Usermap = {
-                                      'message:': textController.text,
+                                      'message': textController.text,
+                                      'sender': CurrentUser.getUid(),
                                     };
                                     FirebaseFirestore.instance
-                                        .collection("chatroom")
+                                        .collection("chatrooms")
                                         .doc("chatroom")
                                         .collection("messages")
                                         .add(Usermap);
