@@ -1,9 +1,12 @@
+import 'package:fanpageapp/objs/currentuser.dart';
 import 'package:fanpageapp/screens/newchat.dart';
 import 'package:flutter/material.dart';
 import 'package:fanpageapp/helpers/auth.dart';
 import 'package:fanpageapp/screens/chatroom.dart';
 import 'package:fanpageapp/screens/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:fanpageapp/helpers/adhelper.dart';
 
 class Home extends StatefulWidget {
   int users = 0;
@@ -12,10 +15,36 @@ class Home extends StatefulWidget {
   _State createState() => _State();
 }
 
+@override
+void initState() {
+  // TODO: Initialize _bannerAd
+  BannerAd _bannerAd = BannerAd(
+    adUnitId: AdHelper.bannerAdUnitId,
+    request: AdRequest(),
+    size: AdSize.banner,
+    listener: BannerAdListener(
+      onAdLoaded: (_) {
+        setState(() {
+          _isBannerAdReady = true;
+        });
+      },
+      onAdFailedToLoad: (ad, err) {
+        print('Failed to load a banner ad: ${err.message}');
+        _isBannerAdReady = false;
+        ad.dispose();
+      },
+    ),
+  );
+
+  _bannerAd.load();
+}
+
 class _State extends State<Home> {
   @override
   final AuthService _auth = AuthService();
   int index = 0;
+  int indexx = 0;
+
   @override
   Widget build(BuildContext context) {
     return new Builder(builder: (reg) {
@@ -79,23 +108,125 @@ class _State extends State<Home> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        "Conversations",
-                        style: TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.bold),
-                      ),
                       Container(
                           child: new Column(children: <Widget>[
                         Builder(
-                            builder: (context) => ElevatedButton(
-                                child: Text('Test Chatroom'),
-                                onPressed: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Chatroom()),
-                                  );
-                                })),
+                            builder: (context) => new Scaffold(
+                                  backgroundColor: Colors.green[200],
+                                  body: SingleChildScrollView(
+                                    physics: BouncingScrollPhysics(),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        SafeArea(
+                                            child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 16, right: 16, top: 10),
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                StreamBuilder(
+                                                  stream: FirebaseFirestore
+                                                      .instance
+                                                      .collection("users")
+                                                      .doc(CurrentUser
+                                                          .getEmail())
+                                                      .collection("chats")
+                                                      .snapshots(),
+                                                  builder: (context, snapshot) {
+                                                    return snapshot.hasData
+                                                        ? ListView.builder(
+                                                            itemCount: (snapshot
+                                                                        .data!
+                                                                    as QuerySnapshot)
+                                                                .docs
+                                                                .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return MessageTile(
+                                                                message: (snapshot
+                                                                            .data!
+                                                                        as QuerySnapshot)
+                                                                    .docs[
+                                                                        indexx]
+                                                                    .data()!
+                                                                    .toString(),
+                                                                sender: CurrentUser
+                                                                        .getDisplay() ==
+                                                                    (snapshot.data!
+                                                                            as QuerySnapshot)
+                                                                        .docs[
+                                                                            indexx]
+                                                                        .data()!
+                                                                        .toString(),
+                                                              );
+                                                            })
+                                                        : Container();
+                                                  },
+                                                ),
+                                                new Column(),
+                                              ]),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                  bottomNavigationBar: BottomNavigationBar(
+                                    currentIndex: index,
+                                    onTap: (int index) {
+                                      setState(() {
+                                        this.index = index;
+                                        if (index == 0) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Home()),
+                                          );
+                                        } else if (index == 1) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Home()),
+                                          );
+                                        } else if (index == 2) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Profile()),
+                                          );
+                                        }
+                                      });
+                                    },
+                                    selectedItemColor: Colors.red,
+                                    unselectedItemColor: Colors.grey.shade600,
+                                    selectedLabelStyle:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                    unselectedLabelStyle:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                    type: BottomNavigationBarType.fixed,
+                                    items: [
+                                      BottomNavigationBarItem(
+                                        icon: Icon(Icons.message,
+                                            color: Colors.blue),
+                                        title: Text("Chats",
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                            )),
+                                      ),
+                                      BottomNavigationBarItem(
+                                        icon: Icon(Icons.account_box,
+                                            color: Colors.blue),
+                                        title: Text("Profile",
+                                            style:
+                                                TextStyle(color: Colors.blue)),
+                                      ),
+                                    ],
+                                  ),
+                                )),
                       ])),
                       Container(
                           padding: EdgeInsets.only(
@@ -139,3 +270,8 @@ class _State extends State<Home> {
 //     });
 //   }
 // }
+
+Future<InitializationStatus> _initGoogleMobileAds() {
+  // COMPLETE: Initialize Google Mobile Ads SDK
+  return MobileAds.instance.initialize();
+}
