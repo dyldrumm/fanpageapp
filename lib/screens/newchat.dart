@@ -1,3 +1,4 @@
+import 'package:fanpageapp/objs/currentuser.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,7 +56,16 @@ class _NewChatState extends State<NewChat> {
                         .doc(randID)
                         .collection("messages")
                         .doc('testmessage')
-                        .set({'testmessage': "idk, something"});
+                        .set({
+                      'message': "idk, something",
+                      'sender': "idk, me?"
+                    });
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(CurrentUser.getUid())
+                        .collection("users")
+                        .doc('user2')
+                        .set({'user2': userController.text});
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Home()),

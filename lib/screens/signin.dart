@@ -75,6 +75,12 @@ class _SignInState extends State<SignIn> {
                               context,
                               MaterialPageRoute(builder: (context) => Home()),
                             );
+                            CurrentUser.setUid(
+                                FirebaseAuth.instance.currentUser!.uid);
+                            CurrentUser.setEmail(
+                                FirebaseAuth.instance.currentUser!.email!);
+                            CurrentUser.setDisplay(FirebaseAuth
+                                .instance.currentUser!.displayName!);
                           }
                         })),
                 Builder(
@@ -106,6 +112,12 @@ class _SignInState extends State<SignIn> {
               ])),
         )));
   }
+}
+
+setUserInfo() {
+  CurrentUser.setUid(FirebaseAuth.instance.currentUser!.uid);
+  CurrentUser.setEmail(FirebaseAuth.instance.currentUser!.email!);
+  CurrentUser.setDisplay(FirebaseAuth.instance.currentUser!.displayName!);
 }
 
 // uploadUserInfo(userMap user) {

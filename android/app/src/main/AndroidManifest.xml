@@ -3,6 +3,9 @@
    <application
         android:label="fanpageapp"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7260968088587190~1159458568"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

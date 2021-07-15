@@ -93,6 +93,7 @@ class _State extends State {
                         'last': lastController.text,
                         'userID': randID,
                         'username': displayController.text,
+                        'chats': '',
                       };
                       FirebaseFirestore.instance
                           .collection("users")

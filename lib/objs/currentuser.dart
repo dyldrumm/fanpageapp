@@ -3,6 +3,7 @@ class CurrentUser {
   static String first = '';
   static String last = '';
   static String email = '';
+  static String display = '';
 
   CurrentUser({required uid});
 
@@ -36,5 +37,13 @@ class CurrentUser {
 
   static setUid(String input) {
     uid = input;
+  }
+
+  static String getDisplay() {
+    return display;
+  }
+
+  static setDisplay(String input) {
+    display = input;
   }
 }
