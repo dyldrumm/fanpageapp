@@ -20,6 +20,7 @@ class _NewChatState extends State<NewChat> {
   @override
   Widget build(BuildContext context) {
     final userController = TextEditingController();
+    final nameController = TextEditingController();
     return new Builder(builder: (reg) {
       return new Scaffold(
           appBar: AppBar(title: Text("Create new chat")),
@@ -31,6 +32,10 @@ class _NewChatState extends State<NewChat> {
               TextField(
                   controller: userController,
                   decoration: InputDecoration(hintText: 'Enter user email')),
+              TextField(
+                  controller: nameController,
+                  decoration:
+                      InputDecoration(hintText: 'Enter chat room name')),
               ElevatedButton(
                   child: Text('Create chat'),
                   onPressed: () async {
@@ -62,10 +67,18 @@ class _NewChatState extends State<NewChat> {
                     });
                     FirebaseFirestore.instance
                         .collection("users")
-                        .doc(CurrentUser.getUid())
+                        .doc(CurrentUser.getEmail())
+                        .collection("chats")
+                        .doc(randID)
+                        .set({'title': nameController.text});
+                    FirebaseFirestore.instance
                         .collection("users")
-                        .doc('user2')
-                        .set({'user2': userController.text});
+                        .doc(userController.text)
+                        .collection("chats")
+                        .doc(randID)
+                        .set({'title': nameController.text});
+                    userController.clear();
+                    nameController.clear();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Home()),
